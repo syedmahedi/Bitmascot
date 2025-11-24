@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>DayMate - Frontend (Vue CDN)</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <style> body{font-family:Arial;padding:20px;} .card{border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:6px;} pre{white-space:pre-wrap}</style>
+</head>
+<body>
+<div id="app">
+  <h1>DayMate</h1>
+  <div class="card">
+    <label>City:</label>
+    <input v-model="city" placeholder="e.g., London" />
+    <button @click="fetchAll">Get Plan</button>
+  </div>
+  <div class="card">
+    <h3>Weather</h3>
+    <pre>{{ weather }}</pre>
+  </div>
+  <div class="card">
+    <h3>News</h3>
+    <pre>{{ news }}</pre>
+  </div>
+  <div class="card">
+    <h3>Recommendations</h3>
+    <pre>{{ plan.recommendations }}</pre>
+  </div>
+</div>
+<script>
+const { createApp } = Vue;
+createApp({
+  data(){ return { city:'', weather:'', news:[], plan:{}} },
+  methods:{
+    async fetchAll(){
+      const payload = { city: this.city || null };
+      try{
+        const res = await fetch('http://localhost:8000/plan', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        if(!res.ok) throw new Error('Backend error: '+res.status);
+        this.plan = await res.json();
+        this.weather = this.plan.weather;
+        this.news = this.plan.news;
+      }catch(err){
+        this.weather = '';
+        this.news = [];
+        this.plan = {recommendations:['Failed to fetch plan: '+err.message]};
+      }
+    }
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
