@@ -22,9 +22,6 @@ pip install -r backend/requirements.txt
 uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-# DayMate (BitMascot Assignment)
-
-**DayMate** is an AI-powered daily planner that combines weather + local news to produce short, actionable recommendations.
 
 ## Live URLs
 - Backend (Render): `https://bitmascot-backend.onrender.com`  <!-- Replace after deployment -->
