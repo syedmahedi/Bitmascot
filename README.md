@@ -23,5 +23,5 @@ uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ## Live URLs
-- Backend (Render): `https://bitmascot-backend.onrender.com`  
-- Frontend (Netlify): `https://<your-netlify-site-url>`
+- Backend (Render): `https://bitmascot.onrender.com`  
+- Frontend (Netlify): `https://glowing-profiterole-cfc47e.netlify.app/`

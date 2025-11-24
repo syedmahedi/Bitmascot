@@ -2,56 +2,113 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>DayMate - Frontend (Vue CDN)</title>
+  <title>DayMate - Smart Daily Planner</title>
+
+  <!-- Vue 3 CDN -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <style> body{font-family:Arial;padding:20px;} .card{border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:6px;} pre{white-space:pre-wrap}</style>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<div id="app">
-  <h1>DayMate</h1>
-  <div class="card">
-    <label>City:</label>
-    <input v-model="city" placeholder="e.g., London" />
-    <button @click="fetchAll">Get Plan</button>
+
+<body class="bg-gray-100 text-gray-800">
+  <div id="app" class="max-w-3xl mx-auto py-10 px-4">
+
+    <h1 class="text-4xl font-bold mb-6 text-center">DayMate</h1>
+
+    <!-- Input Section -->
+    <div class="bg-white shadow p-5 rounded-lg mb-6">
+      <label class="font-semibold">City:</label>
+      <input 
+        v-model="city" 
+        placeholder="e.g., Dhaka" 
+        class="border border-gray-300 px-3 py-2 rounded w-2/3"
+      />
+      <button 
+        @click="fetchAll"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded ml-2"
+      >
+        Get Plan
+      </button>
+    </div>
+
+    <!-- Weather Section -->
+    <div class="bg-white shadow p-5 rounded-lg mb-6">
+      <h3 class="text-xl font-semibold mb-3">Weather</h3>
+
+      <div v-if="weather">
+        <p><strong>Description:</strong> {{ weather.description }}</p>
+        <p><strong>Temperature:</strong> {{ weather.temp_c }} °C</p>
+
+        <p v-if="weather.provider === 'mock'" class="text-sm text-gray-500 mt-2">
+          (Mock data shown because no API key was provided)
+        </p>
+      </div>
+    </div>
+
+    <!-- News Section -->
+    <div class="bg-white shadow p-5 rounded-lg mb-6">
+      <h3 class="text-xl font-semibold mb-3">News</h3>
+
+      <ul class="list-disc pl-5 space-y-2">
+        <li v-for="n in news" class="border-b pb-2">
+          <p class="font-semibold">{{ n.title }}</p>
+          <p class="text-gray-600 text-sm">{{ n.summary }}</p>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Recommendations Section -->
+    <div class="bg-white shadow p-5 rounded-lg">
+      <h3 class="text-xl font-semibold mb-3">Recommendations</h3>
+
+      <ul class="list-disc pl-5 space-y-2">
+        <li v-for="r in plan.recommendations">
+          {{ r }}
+        </li>
+      </ul>
+    </div>
+
   </div>
-  <div class="card">
-    <h3>Weather</h3>
-    <pre>{{ weather }}</pre>
-  </div>
-  <div class="card">
-    <h3>News</h3>
-    <pre>{{ news }}</pre>
-  </div>
-  <div class="card">
-    <h3>Recommendations</h3>
-    <pre>{{ plan.recommendations }}</pre>
-  </div>
-</div>
-<script>
-const { createApp } = Vue;
-createApp({
-  data(){ return { city:'', weather:'', news:[], plan:{}} },
-  methods:{
-    async fetchAll(){
-      const payload = { city: this.city || null };
-      try{
-        const res = await fetch('https://bitmascot.onrender.com/plan', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body: JSON.stringify(payload)
-        });
-        if(!res.ok) throw new Error('Backend error: '+res.status);
-        this.plan = await res.json();
-        this.weather = this.plan.weather;
-        this.news = this.plan.news;
-      }catch(err){
-        this.weather = '';
-        this.news = [];
-        this.plan = {recommendations:['Failed to fetch plan: '+err.message]};
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          city: "",
+          weather: null,
+          news: [],
+          plan: { recommendations: [] }
+        };
+      },
+      methods: {
+        async fetchAll() {
+          const payload = { city: this.city || null };
+
+          try {
+            const res = await fetch("https://bitmascot.onrender.com/plan", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) throw new Error("Backend error: " + res.status);
+
+            this.plan = await res.json();
+            this.weather = this.plan.weather;
+            this.news = this.plan.news;
+
+          } catch (err) {
+            this.weather = null;
+            this.news = [];
+            this.plan = { recommendations: ["Failed to fetch plan: " + err.message] };
+          }
+        }
       }
-    }
-  }
-}).mount('#app');
-</script>
+    }).mount("#app");
+  </script>
+
 </body>
 </html>
