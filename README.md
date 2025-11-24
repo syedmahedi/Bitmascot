@@ -22,7 +22,6 @@ pip install -r backend/requirements.txt
 uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-
 ## Live URLs
-- Backend (Render): `https://bitmascot-backend.onrender.com`  <!-- Replace after deployment -->
-- Frontend (Netlify): `https://<your-netlify-site-url>`      <!-- Replace after deployment -->
+- Backend (Render): `https://bitmascot-backend.onrender.com`  
+- Frontend (Netlify): `https://<your-netlify-site-url>`
