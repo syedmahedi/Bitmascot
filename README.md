@@ -22,28 +22,10 @@ pip install -r backend/requirements.txt
 uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-3. Open the frontend
+# DayMate (BitMascot Assignment)
 
-You can open `frontend/index.html` directly in your browser, or serve it with a static server:
+**DayMate** is an AI-powered daily planner that combines weather + local news to produce short, actionable recommendations.
 
-```powershell
-cd frontend
-python -m http.server 5173
-# then open http://localhost:5173 in your browser
-```
-
-Environment variables
-- Copy `.env.example` to `.env` and fill API keys (do NOT commit real keys).
-
-What's included
-- `backend/` — FastAPI skeleton with endpoints: `/`, `/weather`, `/news`, `/plan` (mock implementations)
-- `frontend/` — Minimal Vue (CDN) single-file `index.html` that consumes the backend
-- `.env.example` — Shows required environment variables
-
-Next steps to complete the project
-- Integrate a real weather API (OpenWeatherMap or similar)
-- Integrate a news API or scraping for local news
-- Implement LLM-based or rule-based planning logic (backend)
-- Add user interface polish and deployment configs
-
-Refer to `requirement.txt` for full assignment requirements.
+## Live URLs
+- Backend (Render): `https://bitmascot-backend.onrender.com`  <!-- Replace after deployment -->
+- Frontend (Netlify): `https://<your-netlify-site-url>`      <!-- Replace after deployment -->

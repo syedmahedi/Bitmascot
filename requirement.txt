@@ -1,51 +1,6 @@
-AI Assistant Agent for Daily Planning
- Assignment
- Objective
- Build DayMate- an AI-powered assistant that helps users plan their day by combining
- real-time weather data, local news, and intelligent recommendations.
- Scenario
- DayMate analyzes current weather and local news to provide personalized daily planning
- suggestions.
- Examples:
- ● Rain forecasted → Suggest carrying an umbrella or rescheduling outdoor plans
- ● Clear weather → Recommend outdoor activities
- ● Traffic alerts or emergencies → Advise schedule modifications
- Technical Stack
- Backend: Any Python framework (FastAPI, Flask, Django)
- Frontend: Vue.js or any modern framework (React, Angular, Svelte)
- Deployment: Must be deployed and accessible via public URLs (use any free hosting
- service of your choice)
- Required Features
- 1. Weather Integration- Fetch real-time weather based on user location
- 2. News Aggregation- Retrieve local news via API or web scraping
- 3. AI Planning Agent- Generate personalized recommendations using weather and
- news data
- 4. User Interface- Clean interface to display weather, news, and AI suggestions
-Evaluation Criteria
- ● Technical Implementation (30%)- Code quality, architecture, error handling
- ● Functionality (25%)- All features working correctly
- ● AI/Logic Quality (20%)- Relevant, context-aware recommendations
- ● Deployment (15%)- Successfully deployed and accessible
- ● User Experience (10%)- Design, usability, polish
- Deliverables
- 1. GitHub repository with source code
- 2. Live URLs for frontend and backend
- 3. README with:
- ○ Local setup instructions
- ○ Deployment instructions
- ○ Live application URLs
- ○ Technology choices explanation
- 4. Screenshots or demo video
- Bonus Points
- ● User authentication
- ● Daily plan history
- ● Multiple location support
- ● Docker containerization
- ● CI/CD pipeline
- ● Unit tests
- Submission
- Submit:
- 1. GitHub repository link
- 2. Live application URLs
- 3. README with setup, deployment steps, and live URLs
- Note: Do not commit API keys. Use environment variables and include .env.example file.
+fastapi
+uvicorn[standard]
+httpx
+python-dotenv
+openai
+pydantic
