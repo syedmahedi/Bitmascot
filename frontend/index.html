@@ -35,7 +35,7 @@ createApp({
     async fetchAll(){
       const payload = { city: this.city || null };
       try{
-        const res = await fetch('https://bitmascot-backend.onrender.com/plan', {
+        const res = await fetch('https://bitmascot.onrender.com/plan', {
           method:'POST',
           headers:{'Content-Type':'application/json'},
           body: JSON.stringify(payload)
