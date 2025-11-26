@@ -1,61 +1,57 @@
-import os
-import asyncio
-import json
-import httpx
-
-OPENAI_API_KEY_ENV = "OPENAI_API_KEY"
-
-
 async def plan_with_rules(weather: dict, news: list) -> dict:
     recs = []
-    desc = (weather.get("description") or "").lower()
-    if "rain" in desc or "shower" in desc or "storm" in desc:
-        recs.append("Carry an umbrella and prefer indoor activities.")
-    elif "clear" in desc or "sun" in desc:
-        recs.append("Great day for outdoor activities; consider a walk or exercise outside.")
-    else:
-        recs.append("Check details for weather-sensitive plans.")
 
+    desc = (weather.get("description") or "").lower()
+    temp = weather.get("temp_c")
+    wind = weather.get("wind_kph", 0)
+    humidity = weather.get("humidity", 0)
+
+    # Temperature-based
+    if temp is not None:
+        if temp >= 33:
+            recs.append("It's very hot today — drink plenty of water and avoid staying outside during noon.")
+        elif temp >= 28:
+            recs.append("Warm weather today — suitable for outdoor activities, but stay hydrated.")
+        elif temp >= 20:
+            recs.append("Comfortable temperature — great for walking or light exercise.")
+        else:
+            recs.append("Cool weather — consider wearing warm clothing when going out.")
+
+    # Weather description
+    if "rain" in desc or "shower" in desc or "storm" in desc:
+        recs.append("Rain expected — carry an umbrella and consider indoor plans.")
+        recs.append("Roads may be slippery, travel carefully.")
+    elif "cloud" in desc or "overcast" in desc:
+        recs.append("Cloudy skies — good time for indoor tasks or relaxing in a cafe.")
+    elif "clear" in desc or "sun" in desc:
+        recs.append("Clear weather — great opportunity for outdoor activities.")
+
+    # Wind
+    if wind and wind > 25:
+        recs.append("Strong winds expected — avoid biking or long rides with children.")
+    
+    # Humidity
+    if humidity and humidity > 80:
+        recs.append("High humidity — you may feel uncomfortable outside, carry water.")
+
+    # News-based
     for item in news:
         t = (item.get("title") or "").lower()
         s = (item.get("summary") or "").lower()
+
         if "traffic" in t or "accident" in s or "road" in s:
-            recs.append("Expect travel delays — leave earlier for appointments.")
+            recs.append("Traffic issues reported — leave earlier for appointments.")
             break
 
-    return {"source": "rules", "recommendations": recs}
+        if "strike" in t or "protest" in s:
+            recs.append("Local protest/strike reported — plan travel accordingly.")
+            break
 
+        if "power" in t or "electricity" in s:
+            recs.append("Power issues reported — charge devices before going out.")
+            break
 
-async def plan_with_openai(weather: dict, news: list) -> dict:
-    """Call OpenAI ChatCompletion to generate recommendations.
-    Falls back to rule-based if the OpenAI key is missing or the call fails.
-    """
-    key = os.getenv(OPENAI_API_KEY_ENV)
-    if not key:
-        return await plan_with_rules(weather, news)
+    if not recs:
+        recs.append("Plan your day based on personal priorities and stay safe.")
 
-    try:
-        import openai
-
-        openai.api_key = key
-        system = "You are DayMate, an assistant that creates short, practical daily planning recommendations based on weather and local news. Provide 3 concise actionable suggestions."
-        user = f"Weather: {json.dumps(weather)}\nNews: {json.dumps(news[:5])}"
-        resp = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
-            max_tokens=300,
-            n=1,
-        )
-        text = resp.choices[0].message.content.strip()
-        # naive split into lines
-        recs = [line.strip('- ').strip() for line in text.splitlines() if line.strip()]
-        return {"source": "openai", "recommendations": recs, "raw": text}
-    except Exception:
-        return await plan_with_rules(weather, news)
-
-
-async def generate_plan(weather: dict, news: list) -> dict:
-    # prefer OpenAI if key present
-    if os.getenv(OPENAI_API_KEY_ENV):
-        return await plan_with_openai(weather, news)
-    return await plan_with_rules(weather, news)
+    return {"source": "rules", "recommendations": recs[:5]}
